@@ -29,10 +29,8 @@ skcm_clinical <- clinicalData(cbio, "skcm_tcga") %>%
                                ifelse(grepl("II", AJCC_PATHOLOGIC_TUMOR_STAGE), "II",
                                       ifelse(grepl("I", AJCC_PATHOLOGIC_TUMOR_STAGE), "I", NA))))) %>%
   mutate(Stage = factor(Stage, levels = c("I", "II", "III", "IV")))%>%
-  dplyr::filter(OS_STATUS != "") %>% # filter for patients with OS data
-  mutate(OS_STATUS_level = ifelse(OS_STATUS=="1:DECEASED",1,0)) %>% 
-  mutate(Days= as.numeric(OS_MONTHS)*30.417) %>%
-  dplyr::filter(!is.na(Days))
+  dplyr::filter(OS_STATUS != "" & !is.na(OS_MONTHS)) %>% # filter for patients with OS data
+  mutate(OS_STATUS_level = ifelse(OS_STATUS=="1:DECEASED",1,0)) 
 
 # stratify patients by high & low GOI expression according to median
 mrna_level = paste(GOI.survival, "level", sep = ".")
